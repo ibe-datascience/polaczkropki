@@ -465,10 +465,8 @@ function osHTML(z){
   }).join("");
   const sp = z.etap==="sp";
   const et = sp
-    ? {sub:"Co z młodszych klas przygotowuje grunt — i dokąd poprowadzi liceum.",
-       przed:"młodsze klasy", teraz:"klasy 7–8", dalej:"liceum i dalej"}
-    : {sub:"Co ze szkoły podstawowej przygotowuje grunt — i dokąd poprowadzi zakres rozszerzony.",
-       przed:"szkoła podstawowa", teraz:"liceum i technikum", dalej:"zakres rozszerzony i dalej"};
+    ? {przed:"młodsze klasy", teraz:"klasy 7–8", dalej:"liceum i dalej"}
+    : {przed:"szkoła podstawowa", teraz:"liceum i technikum", dalej:"zakres rozszerzony i dalej"};
   const faza = (fc, label, kiedy, tresc) => tresc ? `
     <div class="faza" style="--fc:${fc}">
       <span class="f-dot"></span>
@@ -477,8 +475,9 @@ function osHTML(z){
     </div>` : "";
   return `
   <div class="os">
-    <div class="os-title">Oś czasu: skąd to przychodzi, dokąd prowadzi</div>
-    <div class="os-sub">${et.sub}</div>
+    <div class="os-title">Linia czasu: od fundamentów do matury</div>
+    <div class="os-sub">Sprawdź, co z podstawówki buduje fundament pod ten temat
+      i dokąd doprowadzi Cię zakres rozszerzony w szkole średniej.</div>
     ${faza(FAZY.przed, "Masz już w plecaku", et.przed, przed)}
     ${faza(FAZY.teraz, "Jesteś tutaj", et.teraz, teraz)}
     ${faza(FAZY.dalej, "Przed tobą", et.dalej, dalej)}
