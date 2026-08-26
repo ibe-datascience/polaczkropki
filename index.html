@@ -481,7 +481,7 @@ function osHTML(z){
       </div>
     </div>`).join("");
   const teraz = z.wystapienia.map((w,i)=>`
-    <div class="os-row klik ${i===KROK?"on":""}" style="--fc:${FAZY.teraz}" onclick="idz(${i})">
+    <div class="os-row klik ${i===KROK?"on":""}" style="--fc:${FAZY.teraz}" onclick="idzZOsi(${i})">
       ${pill(w.przedmiot)}
       <div class="tresc"><b>${esc(w.haslo)}</b>${w.zakres==="rozszerzony" ? " · zakres rozszerzony" : ""}</div>
       ${i===KROK ? `<span class="tu-badge">czytasz</span>` : ""}
@@ -609,6 +609,29 @@ function idz(i){
   if(!BIEZACE || i<0 || i>=BIEZACE.wystapienia.length) return;
   KROK = i;
   renderZagadnienie();
+}
+
+/* powolne, płynne przewijanie do celu (własna animacja — natywne smooth bywa za szybkie) */
+function plynnieDo(el, zapas=96){
+  const start = window.scrollY;
+  const cel = Math.max(0, el.getBoundingClientRect().top + start - zapas);
+  const dyst = cel - start;
+  if(Math.abs(dyst) < 4) return;
+  const czas = Math.min(1400, 500 + Math.abs(dyst)*0.45);
+  const t0 = performance.now();
+  const ease = t => t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+  (function krok(t){
+    const p = Math.min(1, (t - t0)/czas);
+    window.scrollTo(0, start + dyst*ease(p));
+    if(p < 1) requestAnimationFrame(krok);
+  })(t0);
+}
+
+/* klik na linii czasu: przełącz spojrzenie i przewiń w górę do karty z materiałem */
+function idzZOsi(i){
+  idz(i);
+  const cel = document.querySelector(".spojrzenia-label") || document.querySelector(".stos");
+  if(cel) plynnieDo(cel);
 }
 
 function route(){
