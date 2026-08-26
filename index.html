@@ -25,10 +25,10 @@ header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px
 header .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:16px;cursor:pointer}
 header .brand img{height:22px;width:75px;aspect-ratio:666/196;object-fit:contain;display:block}
 header .brand .sep{width:1px;height:20px;background:var(--line)}
-header .marka{display:inline-flex;align-items:center;gap:9px;font-size:16.5px;font-weight:800;letter-spacing:-.015em}
-header .marka svg{width:36px;height:16px;overflow:visible;flex-shrink:0}
-header .marka b{background:linear-gradient(90deg,var(--brand),var(--brand2));
-  -webkit-background-clip:text;background-clip:text;color:transparent}
+header .marka{position:relative;font-size:17px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+header .marka .kropka{display:inline-block;width:7px;height:7px;margin-left:4px;border-radius:50%;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));transition:transform .25s}
+header .brand:hover .kropka{transform:scale(1.35)}
 header .spacer{flex:1}
 header nav{display:flex;gap:6px}
 header nav a{font-size:13.5px;font-weight:650;text-decoration:none;padding:7px 14px;border-radius:999px;
@@ -319,22 +319,7 @@ body.zamkniete > header, body.zamkniete > main{display:none}
   <div class="brand" onclick="location.hash=''">
     <img src="assets/reforma26-logo-trans.png" alt="Reforma 26 — Kompas Jutra" onerror="this.style.display='none'">
     <span class="sep"></span>
-    <span class="marka">
-      <svg viewBox="0 0 36 16" aria-hidden="true">
-        <defs>
-          <linearGradient id="gradMarka" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0" stop-color="#00a686"/><stop offset=".5" stop-color="#607eff"/>
-            <stop offset="1" stop-color="#ec4899"/>
-          </linearGradient>
-        </defs>
-        <path d="M4,13 C9,5 13,11 18,8 C23,5 27,9 32,4" fill="none" stroke="url(#gradMarka)"
-              stroke-width="1.8" stroke-linecap="round"/>
-        <circle cx="4"  cy="13" r="2.7" fill="#00a686"/>
-        <circle cx="18" cy="8"  r="2.7" fill="#607eff"/>
-        <circle cx="32" cy="4"  r="2.7" fill="#ec4899"/>
-      </svg>
-      Połącz <b>kropki</b>
-    </span>
+    <span class="marka">Połącz kropki<span class="kropka" aria-hidden="true"></span></span>
   </div>
   <div class="spacer"></div>
   <nav>
