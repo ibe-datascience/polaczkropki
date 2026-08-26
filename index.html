@@ -93,7 +93,18 @@ main{max-width:1020px;margin:0 auto;padding:0 22px 90px}
 .przelacznik button.on{background:var(--ink);color:#fff}
 .zcard{--h:0,166,134;position:relative;display:flex;flex-direction:column;gap:12px;padding:26px 26px 22px;
   background:linear-gradient(150deg, rgba(var(--h), .07), #fff 55%);
-  border:1px solid var(--line);border-radius:24px;cursor:pointer;transition:.2s;text-align:left;overflow:hidden}
+  border:1px solid var(--line);border-radius:24px;cursor:pointer;transition:.2s;text-align:left;overflow:hidden;
+  animation:kartaWchodzi .55s cubic-bezier(.22,1,.36,1) backwards;animation-delay:calc(var(--i,0)*65ms)}
+@keyframes kartaWchodzi{
+  from{opacity:0;transform:translateY(26px) scale(.95)}
+  60%{opacity:1}
+  to{opacity:1;transform:none}
+}
+.zgrid.znika .zcard{animation:kartaZnika .24s ease forwards;animation-delay:calc(var(--i,0)*22ms);pointer-events:none}
+@keyframes kartaZnika{to{opacity:0;transform:translateY(-16px) scale(.97)}}
+@media (prefers-reduced-motion:reduce){
+  .zcard,.zgrid.znika .zcard{animation:none}
+}
 .zcard .wm{position:absolute;right:-18px;bottom:-26px;font-size:120px;opacity:.06;pointer-events:none;
   filter:grayscale(1);transition:.25s}
 .zcard:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(var(--h),.16);border-color:rgba(var(--h),.4)}
@@ -391,10 +402,23 @@ let BIEZACE = null;     // aktywne zagadnienie
 let ETAP = localStorage.getItem("zag_etap");
 if(ETAP !== "sp" && ETAP !== "lo") ETAP = null;
 
+let ETAP_ANIM = null;
 function ustawEtap(e){
+  if(e === ETAP) return;
+  const g = document.getElementById("zgrid");
+  const maKarty = ETAP && g && g.querySelector(".zcard");
   ETAP = e;
   localStorage.setItem("zag_etap", e);
-  renderHome();
+  if(!maKarty){ renderHome(); return; }
+  // przełącznik reaguje od razu, karty wychodzą kaskadą i wchodzą nowe
+  g.querySelectorAll(".przelacznik button").forEach(b =>
+    b.classList.toggle("on", b.dataset.etap === e));
+  g.classList.add("znika");
+  clearTimeout(ETAP_ANIM);
+  ETAP_ANIM = setTimeout(() => {
+    g.classList.remove("znika");
+    renderHome();
+  }, 260);
 }
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -427,15 +451,15 @@ function renderHome(){
   }
   const przelacznik = `
   <div class="etap-przelacznik"><div class="przelacznik">
-    <button class="${ETAP==="sp"?"on":""}" onclick="ustawEtap('sp')">Szkoła podstawowa</button>
-    <button class="${ETAP==="lo"?"on":""}" onclick="ustawEtap('lo')">Liceum i technikum</button>
+    <button data-etap="sp" class="${ETAP==="sp"?"on":""}" onclick="ustawEtap('sp')">Szkoła podstawowa</button>
+    <button data-etap="lo" class="${ETAP==="lo"?"on":""}" onclick="ustawEtap('lo')">Liceum i technikum</button>
   </div></div>`;
   g.innerHTML = przelacznik + DANE.zagadnienia.filter(z=>z.etap===ETAP).map(zcardHTML).join("");
 }
 
-function zcardHTML(z){
+function zcardHTML(z, i=0){
   return [z].map(z => `
-    <div class="zcard" style="--h:${KOLORY_RGB[z.id]||"0,166,134"}" onclick="location.hash='#/z/${z.id}'">
+    <div class="zcard" style="--h:${KOLORY_RGB[z.id]||"0,166,134"};--i:${i}" onclick="location.hash='#/z/${z.id}'">
       <span class="wm">${z.emoji}</span>
       <span class="em">${z.emoji}</span>
       <h3>${esc(z.nazwa)}</h3>
