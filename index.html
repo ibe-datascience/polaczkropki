@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zagadnienia — jedno pojęcie, wiele przedmiotów</title>
+<link rel="icon" href="assets/favicon.ico">
+<style>
+:root{
+  --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f8fafc;
+  --brand:#00a686; --brand2:#607eff;
+  --matematyka:#0891b2; --fizyka:#607eff; --chemia:#ec4899;
+  --biologia:#00a686; --geografia:#f59e0b; --przedsiebiorczosc:#7c5cff;
+  --zdrowotna:#e11d48;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+a{color:inherit}
+
+/* ===== header ===== */
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:12px 22px;
+  background:rgba(248,250,252,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+header .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:16px;cursor:pointer}
+header .brand img{height:22px;width:75px;aspect-ratio:666/196;object-fit:contain;display:block}
+header .brand .sep{width:1px;height:20px;background:var(--line)}
+header .pilot{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+header .spacer{flex:1}
+header nav{display:flex;gap:6px}
+header nav a, header nav .on{font-size:13.5px;font-weight:650;text-decoration:none;padding:7px 14px;border-radius:999px;
+  border:1px solid transparent;color:var(--muted);transition:.15s}
+header nav a:hover{color:var(--ink);border-color:var(--line);background:#fff}
+header nav .on{color:var(--ink);border-color:var(--line);background:#fff}
+
+main{max-width:1020px;margin:0 auto;padding:0 22px 90px}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ===== motyw: połącz kropki ===== */
+/* prowadnica jest kreskowana jak w dziecięcej łamigłówce, a kolorowa linia
+   dorysowuje się po niej, zapalając po drodze kropki poszczególnych przedmiotów;
+   łuk biegnie w tle hero i oplata tytuł zamiast zajmować osobny pas */
+.kropki-tlo{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;opacity:.5}
+.kropki-tlo .prowadnica{fill:none;stroke:#d7dfe9;stroke-width:1.5;stroke-dasharray:3 8;stroke-linecap:round}
+.kropki-tlo .linia{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;
+  animation:rysuj 1.5s cubic-bezier(.55,.08,.3,1) .18s forwards}
+.kropki-tlo circle{opacity:0;transform-box:fill-box;transform-origin:center;
+  animation:kropka-zapala .42s cubic-bezier(.34,1.5,.5,1) forwards}
+.kropki-tlo text{opacity:0;fill:#94a3b8;font-size:11px;font-weight:800;text-anchor:middle;
+  animation:numer-wchodzi .4s ease forwards}
+@keyframes rysuj{to{stroke-dashoffset:0}}
+@keyframes kropka-zapala{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:none}}
+@keyframes numer-wchodzi{to{opacity:.8}}
+@media (prefers-reduced-motion:reduce){
+  .kropki-tlo .linia{animation:none;stroke-dashoffset:0}
+  .kropki-tlo circle, .kropki-tlo text{animation:none;opacity:1}
+}
+
+/* ===== home ===== */
+.hero{position:relative;text-align:center;padding:66px 0 12px}
+.hero > *:not(.kropki-tlo){position:relative;z-index:1}
+@media (max-width:600px){.hero .kropki-tlo{display:none}}
+.hero .etap{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:#4257e0;background:rgba(96,126,255,.1);border:1px solid rgba(96,126,255,.28);padding:5px 14px;border-radius:999px;margin-bottom:22px}
+.hero h1{font-size:clamp(28px,4.6vw,46px);font-weight:800;letter-spacing:-.025em;line-height:1.14}
+.hero h1 .grad{background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:16px auto 0;max-width:600px;color:var(--muted);font-size:16px;line-height:1.65}
+
+.zgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-top:30px;animation:fadein .35s ease}
+.zgrid .sekcja{grid-column:1/-1;display:flex;align-items:center;gap:14px;margin:22px 0 0;
+  font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#94a3b8}
+.zgrid .sekcja::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* wybór etapu */
+.wybor{grid-column:1/-1;text-align:center;padding:14px 0 26px;animation:fadein .3s ease}
+.wybor-tytul{font-size:15px;font-weight:700;color:#334155}
+.wybor-karty{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.etap-karta{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:255px;padding:30px 36px;
+  background:#fff;border:1.5px solid var(--line);border-radius:24px;cursor:pointer;transition:.2s}
+.etap-karta:hover{transform:translateY(-3px);border-color:rgba(0,166,134,.5);box-shadow:0 16px 38px rgba(15,23,42,.1)}
+.etap-karta .ek-em{font-size:38px}
+.etap-karta .ek-naz{font-size:17px;font-weight:800;letter-spacing:-.01em}
+.etap-karta .ek-opis{font-size:13px;color:var(--muted)}
+.etap-przelacznik{grid-column:1/-1;display:flex;justify-content:center;margin:4px 0 2px}
+.przelacznik{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px;gap:4px}
+.przelacznik button{border:0;background:none;padding:8px 22px;border-radius:999px;font-size:13.5px;font-weight:700;
+  color:var(--muted);cursor:pointer;transition:.15s}
+.przelacznik button:hover{color:var(--ink)}
+.przelacznik button.on{background:var(--ink);color:#fff}
+.zcard{--h:0,166,134;position:relative;display:flex;flex-direction:column;gap:12px;padding:26px 26px 22px;
+  background:linear-gradient(150deg, rgba(var(--h), .07), #fff 55%);
+  border:1px solid var(--line);border-radius:24px;cursor:pointer;transition:.2s;text-align:left;overflow:hidden}
+.zcard .wm{position:absolute;right:-18px;bottom:-26px;font-size:120px;opacity:.06;pointer-events:none;
+  filter:grayscale(1);transition:.25s}
+.zcard:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(var(--h),.16);border-color:rgba(var(--h),.4)}
+.zcard:hover .wm{opacity:.12;transform:rotate(-8deg) scale(1.06)}
+.zcard .em{width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:28px;
+  background:rgba(var(--h),.1);border-radius:16px}
+.zcard h3{font-size:19px;font-weight:800;letter-spacing:-.01em}
+.zcard .pyt{font-size:14.5px;color:#475569;line-height:1.55;min-height:44px}
+.zcard .przedmioty{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:12px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px;
+  background:color-mix(in srgb, var(--c) 11%, white);color:color-mix(in srgb, var(--c) 78%, black);border:1px solid color-mix(in srgb, var(--c) 28%, white)}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--c)}
+
+/* ===== widok zagadnienia ===== */
+#widok{animation:fadein .3s ease}
+.back{display:inline-flex;align-items:center;gap:8px;margin-top:26px;font-size:14px;font-weight:650;color:var(--muted);
+  background:none;border:0;cursor:pointer;padding:6px 0}
+.back:hover{color:var(--ink)}
+.zhero{text-align:center;padding:14px 0 6px}
+.zhero .em{font-size:46px}
+.zhero .etap-mini{margin-top:10px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#94a3b8}
+.zhero h1{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.02em;margin-top:8px}
+.zhero .pyt{margin:18px auto 0;max-width:660px;font-size:clamp(17px,2.4vw,21px);font-weight:700;line-height:1.45;color:#1e293b}
+.zhero .esencja{margin:14px auto 0;max-width:640px;font-size:15px;line-height:1.7;color:var(--muted)}
+
+/* spojrzenia (przełącznik przedmiotów) */
+.spojrzenia-label{text-align:center;margin-top:34px;font-size:11.5px;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;color:#94a3b8}
+.kroki{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0 26px}
+.krok{--c:#64748b;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:108px;
+  padding:11px 16px;border-radius:16px;border:1.5px solid var(--line);background:#fff;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.krok .k-wm{position:absolute;right:-8px;bottom:-12px;font-size:46px;line-height:1;pointer-events:none;
+  opacity:.13;filter:grayscale(1);transform:rotate(-10deg);transform-origin:center;
+  transition:opacity .25s ease, filter .25s ease, transform .25s ease}
+.krok:hover .k-wm, .krok.on .k-wm{opacity:.32;filter:grayscale(0);transform:rotate(-10deg) scale(1.07)}
+.krok .k-p, .krok .k-tag{position:relative}
+.krok .k-p{font-size:13.5px;font-weight:750;color:#334155;display:flex;align-items:center;gap:7px}
+.krok .k-p::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c)}
+.krok .k-tag{font-size:11.5px;color:var(--muted)}
+.krok:hover{border-color:color-mix(in srgb, var(--c) 45%, white);transform:translateY(-2px)}
+.krok.on{border-color:var(--c);background:color-mix(in srgb, var(--c) 7%, white);box-shadow:0 10px 26px color-mix(in srgb, var(--c) 22%, transparent)}
+.krok.on .k-tag{color:color-mix(in srgb, var(--c) 70%, black)}
+
+/* scena: jedna karta */
+.stage{max-width:760px;margin:0 auto}
+/* wszystkie karty leżą w jednej komórce siatki — kontener ma wysokość najwyższej,
+   więc nawigacja pod spodem nie skacze przy przełączaniu przedmiotów */
+.stos{display:grid}
+.stos .scard{grid-area:1/1}
+.stos .scard:not(.aktywna){visibility:hidden;animation:none}
+.scard{--c:#64748b;position:relative;background:#fff;border:1px solid var(--line);border-radius:26px;overflow:hidden;
+  box-shadow:0 18px 50px rgba(15,23,42,.08);animation:rise .34s ease}
+.scard .banda{height:5px;background:linear-gradient(90deg, var(--c), color-mix(in srgb, var(--c) 45%, white))}
+.scard .wm{position:absolute;top:2px;right:-14px;font-size:160px;line-height:1;pointer-events:none;
+  opacity:.09;filter:grayscale(1);transform:rotate(10deg);transform-origin:center;
+  transition:opacity .35s ease, filter .35s ease, transform .35s ease}
+.scard:hover .wm{opacity:.2;filter:grayscale(0);transform:rotate(10deg) scale(1.03)}
+.scard .cialo{position:relative;padding:30px 34px 28px}
+.scard .meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.zr-badge{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#9a3412;
+  background:#fff7ed;border:1px solid #fed7aa;border-radius:999px;padding:3px 10px}
+.baza-badge{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#065f46;
+  background:#ecfdf5;border:1px solid #a7f3d0;border-radius:999px;padding:3px 10px}
+.rola-badge{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#3730a3;
+  background:#eef2ff;border:1px solid #c7d2fe;border-radius:999px;padding:3px 10px}
+.scard h2{font-size:clamp(20px,3vw,26px);font-weight:800;letter-spacing:-.015em;line-height:1.25;margin-top:14px}
+.scard .bo{margin-top:12px;font-size:15.5px;line-height:1.75;color:#334155}
+
+.pp-btn{margin-top:20px;display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:650;
+  color:color-mix(in srgb, var(--c) 60%, black);background:color-mix(in srgb, var(--c) 6%, white);
+  border:1px solid color-mix(in srgb, var(--c) 22%, white);border-radius:999px;padding:9px 18px;cursor:pointer;transition:.15s}
+.pp-btn:hover{background:color-mix(in srgb, var(--c) 11%, white)}
+.pp-btn .chev{font-size:10px;transition:.18s}
+.pp-btn.open .chev{transform:rotate(90deg)}
+.pp-block{display:none;margin-top:14px;background:color-mix(in srgb, var(--c) 4%, #f8fafc);border:1px solid color-mix(in srgb, var(--c) 14%, var(--line));
+  border-radius:16px;padding:16px 18px;animation:fadein .25s ease}
+.pp-block.show{display:block}
+.wym{margin-bottom:12px}
+.wym:last-child{margin-bottom:0}
+.wym .kod{display:inline-block;font-size:12px;font-weight:800;color:color-mix(in srgb, var(--c) 72%, black);
+  background:color-mix(in srgb, var(--c) 11%, white);border-radius:7px;padding:2px 9px}
+.wym .dzial{font-size:12px;color:var(--muted);margin-left:8px}
+.wym .cytat{margin-top:5px;font-size:13.5px;line-height:1.65;color:#334155;padding-left:12px;
+  border-left:2px solid color-mix(in srgb, var(--c) 38%, white)}
+.wym .cytat::before{content:"uczeń: ";color:var(--muted)}
+
+.mat-block{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px}
+.mat-chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#0e7490;
+  text-decoration:none;background:#ecfeff;border:1px solid #a5f3fc;border-radius:999px;padding:7px 14px;transition:.15s;line-height:1.3}
+.mat-chip:hover{background:#cffafe;border-color:#67e8f9}
+.mat-chip .zn{font-size:10.5px;font-weight:700;letter-spacing:.05em;color:#155e75;opacity:.7}
+
+/* nawigacja pod kartą */
+.stage-nav{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:22px}
+.snav{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:650;color:#334155;
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:10px 20px;cursor:pointer;transition:.15s;max-width:44%}
+.snav:hover:not(:disabled){border-color:#94a3b8;transform:translateY(-1px)}
+.snav:disabled{opacity:.35;cursor:default}
+.snav .kier{color:var(--muted);font-weight:500;font-size:12.5px;white-space:nowrap}
+.snav .cel{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* kropki postępu: każdy przedmiot to kropka, przejście łączy je w linię */
+.kropki-pasek{display:flex;align-items:center;gap:20px}
+.kropki-pasek .kr{--kc:#cbd5e1;position:relative;width:11px;height:11px;padding:0;border-radius:50%;
+  background:#fff;border:1.5px solid #cbd5e1;cursor:pointer;transition:.2s}
+.kropki-pasek .kr::after{content:"";position:absolute;top:50%;left:100%;width:20px;
+  border-top:1.5px dashed #cbd5e1;transform:translateY(-50%);transition:.3s}
+.kropki-pasek .kr:last-child::after{display:none}
+.kropki-pasek .kr:hover{transform:scale(1.2)}
+.kropki-pasek .kr.byl{background:var(--kc);border-color:var(--kc)}
+.kropki-pasek .kr.byl::after{border-top-style:solid;border-top-color:var(--kc)}
+.kropki-pasek .kr.on{width:15px;height:15px;background:var(--kc);border-color:var(--kc);
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--kc) 20%, transparent)}
+.klawisze{margin-top:14px;text-align:center;font-size:12px;color:#94a3b8}
+.klawisze kbd{font-family:inherit;background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;font-size:11px}
+
+/* ===== oś czasu edukacji ===== */
+.os{max-width:760px;margin:64px auto 0}
+.os-title{text-align:center;font-size:20px;font-weight:800;letter-spacing:-.01em}
+.os-sub{text-align:center;font-size:14px;color:var(--muted);margin-top:6px}
+.faza{position:relative;margin-top:30px;padding-left:34px}
+.faza::before{content:"";position:absolute;left:9px;top:26px;bottom:-30px;width:2px;
+  background:linear-gradient(to bottom, var(--fc), color-mix(in srgb, var(--fc) 20%, white))}
+.faza:last-child::before{display:none}
+.faza .f-dot{position:absolute;left:0;top:2px;width:20px;height:20px;border-radius:50%;
+  background:color-mix(in srgb, var(--fc) 15%, white);border:2px solid var(--fc)}
+.faza .f-label{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--fc)}
+.faza .f-label .kiedy{color:var(--muted);font-weight:600;letter-spacing:0;text-transform:none;font-size:12px;margin-left:8px}
+.os-row{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line);
+  border-radius:14px;padding:13px 16px;margin-top:10px;transition:.15s}
+.os-row.klik{cursor:pointer}
+.os-row.klik:hover{border-color:color-mix(in srgb, var(--fc) 40%, white);transform:translateX(3px)}
+.os-row .pill{flex-shrink:0;margin-top:1px}
+.os-row .tresc{font-size:13.5px;line-height:1.55;color:#334155}
+.os-row .tresc b{font-weight:750}
+.os-row .zrodlo{display:block;margin-top:4px;font-size:12px;color:#94a3b8;line-height:1.5}
+.os-row .poza-badge{flex-shrink:0;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:#6d28d9;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:999px;padding:3px 10px;margin-top:1px}
+.os-row .tu-badge{flex-shrink:0;font-size:11px;font-weight:700;color:#fff;background:var(--fc);
+  border-radius:999px;padding:3px 10px;margin-top:1px;letter-spacing:.05em;text-transform:uppercase}
+
+.stopka{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);line-height:1.6;text-align:center}
+
+@media (max-width:640px){
+  .scard .cialo{padding:22px 20px}
+  .snav .cel{display:none}
+  .klawisze{display:none}
+}
+
+/* ===== bramka hasła ===== */
+body.zamkniete > header, body.zamkniete > main{display:none}
+.bramka{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:22px;padding:24px;background:var(--bg);text-align:center}
+.bramka img{height:30px;width:102px;object-fit:contain}
+.bramka .oprawa{position:relative;width:min(470px,88vw);aspect-ratio:420/150;
+  display:flex;align-items:center;justify-content:center}
+.bramka .oprawa .kropki-tlo{opacity:1}
+.bramka h1{position:relative;margin-top:22px;font-size:clamp(22px,3.2vw,30px);font-weight:800;letter-spacing:-.02em}
+.bramka p{max-width:390px;font-size:14.5px;line-height:1.6;color:var(--muted)}
+.bramka form{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.bramka input{width:250px;padding:13px 18px;font-size:15px;font-family:inherit;
+  border:1.5px solid var(--line);border-radius:999px;background:#fff;outline:none;transition:.15s}
+.bramka input:focus{border-color:var(--brand)}
+.bramka button{padding:13px 26px;font-size:15px;font-weight:700;color:#fff;background:var(--ink);
+  border:0;border-radius:999px;cursor:pointer;transition:.15s}
+.bramka button:hover{background:#1e293b}
+.bramka button:disabled{opacity:.5;cursor:default}
+.bramka .blad{min-height:20px;font-size:13.5px;font-weight:650;color:#e11d48}
+</style>
+</head>
+<body class="zamkniete">
+
+<div class="bramka" id="bramka">
+  <img src="assets/reforma26-logo-trans.png" alt="Reforma 26 — Kompas Jutra" onerror="this.style.display='none'">
+  <div class="oprawa">
+    <svg class="kropki-tlo" viewBox="0 0 420 150" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <defs>
+        <linearGradient id="gradKropkiBramka" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" stop-color="#00a686"/><stop offset=".3" stop-color="#0891b2"/>
+          <stop offset=".55" stop-color="#607eff"/><stop offset=".78" stop-color="#ec4899"/>
+          <stop offset="1" stop-color="#f59e0b"/>
+        </linearGradient>
+      </defs>
+      <path class="prowadnica" d="M17,125 C24,116 43,87 63,71 C83,55 110,38 134,29 C159,20 185,17 210,17 C235,17 261,20 286,29 C310,38 337,55 357,71 C377,87 396,116 403,125"/>
+      <path class="linia" pathLength="100" stroke="url(#gradKropkiBramka)"
+            d="M17,125 C24,116 43,87 63,71 C83,55 110,38 134,29 C159,20 185,17 210,17 C235,17 261,20 286,29 C310,38 337,55 357,71 C377,87 396,116 403,125"/>
+      <circle cx="17"  cy="125" r="5" fill="#00a686" style="animation-delay:.16s"/>
+      <circle cx="63"  cy="71"  r="5" fill="#0891b2" style="animation-delay:.40s"/>
+      <circle cx="134" cy="29"  r="5" fill="#607eff" style="animation-delay:.64s"/>
+      <circle cx="210" cy="17"  r="5" fill="#7c5cff" style="animation-delay:.88s"/>
+      <circle cx="286" cy="29"  r="5" fill="#ec4899" style="animation-delay:1.12s"/>
+      <circle cx="357" cy="71"  r="5" fill="#e11d48" style="animation-delay:1.36s"/>
+      <circle cx="403" cy="125" r="5" fill="#f59e0b" style="animation-delay:1.58s"/>
+      <text x="17"  y="145" style="animation-delay:.22s">1</text>
+      <text x="49"  y="63"  style="animation-delay:.46s">2</text>
+      <text x="123" y="18"  style="animation-delay:.70s">3</text>
+      <text x="210" y="6"   style="animation-delay:.94s">4</text>
+      <text x="297" y="18"  style="animation-delay:1.18s">5</text>
+      <text x="371" y="63"  style="animation-delay:1.42s">6</text>
+      <text x="403" y="145" style="animation-delay:1.64s">7</text>
+    </svg>
+    <h1>Połącz kropki</h1>
+  </div>
+  <p>Powiązania międzyprzedmiotowe w podstawie programowej — wersja testowa.
+  Wpisz hasło, aby zobaczyć zagadnienia.</p>
+  <form onsubmit="return otworz(event)">
+    <input id="haslo" type="password" placeholder="Hasło" autocomplete="current-password" autofocus>
+    <button id="wejdz" type="submit">Wejdź</button>
+  </form>
+  <div class="blad" id="blad"></div>
+</div>
+
+
+<header>
+  <div class="brand" onclick="location.hash=''">
+    <img src="assets/reforma26-logo-trans.png" alt="Reforma 26 — Kompas Jutra" onerror="this.style.display='none'">
+    <span class="sep"></span>
+    <span>Zagadnienia</span>
+  </div>
+  <span class="pilot">Pilotaż</span>
+  <div class="spacer"></div>
+  <nav>
+    <span class="on">Zagadnienia</span>
+  </nav>
+</header>
+
+<main>
+  <section id="home">
+    <div class="hero">
+      <svg class="kropki-tlo" viewBox="0 0 1000 360" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <defs>
+          <linearGradient id="gradKropkiHero" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0" stop-color="#00a686"/><stop offset=".3" stop-color="#0891b2"/>
+            <stop offset=".55" stop-color="#607eff"/><stop offset=".78" stop-color="#ec4899"/>
+            <stop offset="1" stop-color="#f59e0b"/>
+          </linearGradient>
+        </defs>
+        <path class="prowadnica" d="M40,300 C58.3,278.3 103.3,208.3 150,170 C196.7,131.7 261.7,91.7 320,70 C378.3,48.3 440,40 500,40 C560,40 621.7,48.3 680,70 C738.3,91.7 803.3,131.7 850,170 C896.7,208.3 941.7,278.3 960,300"/>
+        <path class="linia" pathLength="100" stroke="url(#gradKropkiHero)"
+              d="M40,300 C58.3,278.3 103.3,208.3 150,170 C196.7,131.7 261.7,91.7 320,70 C378.3,48.3 440,40 500,40 C560,40 621.7,48.3 680,70 C738.3,91.7 803.3,131.7 850,170 C896.7,208.3 941.7,278.3 960,300"/>
+        <circle cx="40"  cy="300" r="6" fill="#00a686" style="animation-delay:.16s"/>
+        <circle cx="150" cy="170" r="6" fill="#0891b2" style="animation-delay:.40s"/>
+        <circle cx="320" cy="70"  r="6" fill="#607eff" style="animation-delay:.64s"/>
+        <circle cx="500" cy="40"  r="6" fill="#7c5cff" style="animation-delay:.88s"/>
+        <circle cx="680" cy="70"  r="6" fill="#ec4899" style="animation-delay:1.12s"/>
+        <circle cx="850" cy="170" r="6" fill="#e11d48" style="animation-delay:1.36s"/>
+        <circle cx="960" cy="300" r="6" fill="#f59e0b" style="animation-delay:1.58s"/>
+      </svg>
+      <span class="etap">Wersja testowa</span>
+      <h1>Pojęcia nie zamykają się<br><span class="grad">w jednej klasie.</span></h1>
+      <p>Zobacz, jak te same zagadnienia przeplatają się w różnych przedmiotach. Wybierz hasło,
+      by prześledzić je w podstawie programowej oraz materiałach na Zintegrowanej Platformie Edukacyjnej.</p>
+    </div>
+    <div class="zgrid" id="zgrid"></div>
+  </section>
+
+  <section id="widok" hidden></section>
+
+  <div class="stopka" id="stopka" hidden></div>
+</main>
+
+<script>
+const KOLORY = {
+  "matematyka":"var(--matematyka)","fizyka":"var(--fizyka)","chemia":"var(--chemia)",
+  "biologia":"var(--biologia)","geografia":"var(--geografia)",
+  "podstawy przedsiębiorczości":"var(--przedsiebiorczosc)",
+  "edukacja zdrowotna":"var(--zdrowotna)"
+};
+const KOLORY_RGB = {
+  "wzrost-wykladniczy":"0,166,134","logarytm":"96,126,255","prawdopodobienstwo":"236,72,153",
+  "proporcjonalnosc":"8,145,178","rownowaga":"245,158,11","energia":"124,92,255",
+  "przemiany-energii":"234,88,12","cisnienie":"14,165,233","procent-stezenie":"16,185,129",
+  "mikroby":"101,163,13","dane-wykresy":"124,58,237"
+};
+const SKROTY = {"podstawy przedsiębiorczości":"przedsiębiorczość","edukacja zdrowotna":"ed. zdrowotna"};
+const EMBLEMATY = {
+  "matematyka":"📐","fizyka":"⚛️","chemia":"⚗️",
+  "biologia":"🧬","geografia":"🌍","podstawy przedsiębiorczości":"💼",
+  "edukacja zdrowotna":"🩺"
+};
+const ETAPY = {sp:"Szkoła podstawowa · klasy 4–8", lo:"Liceum i technikum"};
+let DANE = null;
+let KROK = 0;           // indeks aktywnego wystąpienia w bieżącym zagadnieniu
+let BIEZACE = null;     // aktywne zagadnienie
+let ETAP = localStorage.getItem("zag_etap");
+if(ETAP !== "sp" && ETAP !== "lo") ETAP = null;
+
+function ustawEtap(e){
+  ETAP = e;
+  localStorage.setItem("zag_etap", e);
+  renderHome();
+}
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const skroc = (s,n=190) => s.length>n ? s.slice(0,n).replace(/\s+\S*$/,"")+"…" : s;
+const nazwaP = p => SKROTY[p] || p;
+
+function pill(p){
+  return `<span class="pill" style="--c:${KOLORY[p]}"><span class="dot"></span>${esc(nazwaP(p))}</span>`;
+}
+
+/* ===== home ===== */
+function renderHome(){
+  const g = document.getElementById("zgrid");
+  if(!ETAP){
+    g.innerHTML = `
+    <div class="wybor">
+      <div class="wybor-tytul">Zacznij od wybrania etapu edukacji</div>
+      <div class="wybor-karty">
+        <button class="etap-karta" onclick="ustawEtap('sp')">
+          <span class="ek-em">🎒</span>
+          <span class="ek-naz">Szkoła podstawowa</span>
+        </button>
+        <button class="etap-karta" onclick="ustawEtap('lo')">
+          <span class="ek-em">🎓</span>
+          <span class="ek-naz">Liceum i technikum</span>
+        </button>
+      </div>
+    </div>`;
+    return;
+  }
+  const przelacznik = `
+  <div class="etap-przelacznik"><div class="przelacznik">
+    <button class="${ETAP==="sp"?"on":""}" onclick="ustawEtap('sp')">Szkoła podstawowa</button>
+    <button class="${ETAP==="lo"?"on":""}" onclick="ustawEtap('lo')">Liceum i technikum</button>
+  </div></div>`;
+  g.innerHTML = przelacznik + DANE.zagadnienia.filter(z=>z.etap===ETAP).map(zcardHTML).join("");
+}
+
+function zcardHTML(z){
+  return [z].map(z => `
+    <div class="zcard" style="--h:${KOLORY_RGB[z.id]||"0,166,134"}" onclick="location.hash='#/z/${z.id}'">
+      <span class="wm">${z.emoji}</span>
+      <span class="em">${z.emoji}</span>
+      <h3>${esc(z.nazwa)}</h3>
+      <div class="pyt">${esc(z.pytanie)}</div>
+      <div class="przedmioty">${[...new Set(z.wystapienia.map(w=>w.przedmiot))].map(pill).join("")}</div>
+    </div>`).join("");
+}
+
+/* ===== widok zagadnienia: jedna karta na raz ===== */
+const FAZY = {przed:"#00a686", teraz:"#4257e0", dalej:"#7c5cff"};
+
+function osHTML(z){
+  const t = z.trasa || {wczesniej:[],pozniej:[]};
+  const przed = t.wczesniej.map(e=>`
+    <div class="os-row">
+      ${pill(e.przedmiot)}
+      <div class="tresc">${esc(e.opis)}
+        <span class="zrodlo">podstawa SP, kl. ${esc(e.klasa)} (${esc(e.obszar)}): „${esc(skroc(e.cytat))}”</span>
+      </div>
+    </div>`).join("");
+  const teraz = z.wystapienia.map((w,i)=>`
+    <div class="os-row klik ${i===KROK?"on":""}" style="--fc:${FAZY.teraz}" onclick="idz(${i})">
+      ${pill(w.przedmiot)}
+      <div class="tresc"><b>${esc(w.haslo)}</b>${w.zakres==="rozszerzony" ? " · zakres rozszerzony" : ""}</div>
+      ${i===KROK ? `<span class="tu-badge">czytasz</span>` : ""}
+    </div>`).join("");
+  const dalej = t.pozniej.map(e=>{
+    if(e.poza) return `
+      <div class="os-row"><span class="poza-badge">poza szkołą</span>
+        <div class="tresc">${esc(e.opis)}</div></div>`;
+    const zrodla = e.kody.map(k=>{
+      const zn = k.zakres ? (k.zakres==="rozszerzony" ? "ZR" : "liceum") : "ZR";
+      return `${esc(e.przedmiot)} ${esc(k.kod)} ${zn}: „${esc(skroc(k.tekst))}”`;
+    }).join("<br>");
+    return `
+      <div class="os-row">
+        ${pill(e.przedmiot)}
+        <div class="tresc">${esc(e.opis)}<span class="zrodlo">${zrodla}</span></div>
+      </div>`;
+  }).join("");
+  const sp = z.etap==="sp";
+  const et = sp
+    ? {sub:"Co z młodszych klas przygotowuje grunt — i dokąd poprowadzi liceum.",
+       przed:"młodsze klasy", teraz:"klasy 7–8", dalej:"liceum i dalej"}
+    : {sub:"Co ze szkoły podstawowej przygotowuje grunt — i dokąd poprowadzi zakres rozszerzony.",
+       przed:"szkoła podstawowa", teraz:"liceum i technikum", dalej:"zakres rozszerzony i dalej"};
+  const faza = (fc, label, kiedy, tresc) => tresc ? `
+    <div class="faza" style="--fc:${fc}">
+      <span class="f-dot"></span>
+      <div class="f-label">${label} <span class="kiedy">${kiedy}</span></div>
+      ${tresc}
+    </div>` : "";
+  return `
+  <div class="os">
+    <div class="os-title">Oś czasu: skąd to przychodzi, dokąd prowadzi</div>
+    <div class="os-sub">${et.sub}</div>
+    ${faza(FAZY.przed, "Masz już w plecaku", et.przed, przed)}
+    ${faza(FAZY.teraz, "Jesteś tutaj", et.teraz, teraz)}
+    ${faza(FAZY.dalej, "Przed tobą", et.dalej, dalej)}
+  </div>`;
+}
+
+function krokiHTML(z){
+  const n = z.wystapienia.length;
+  return `<div class="spojrzenia-label">To samo pojęcie, ${n} ${n<5 ? "spojrzenia" : "spojrzeń"}</div>
+  <div class="kroki">${z.wystapienia.map((w,i)=>`
+    <button class="krok ${i===KROK?"on":""}" style="--c:${KOLORY[w.przedmiot]}" onclick="idz(${i})">
+      <span class="k-wm">${EMBLEMATY[w.przedmiot]||""}</span>
+      <span class="k-p">${esc(nazwaP(w.przedmiot))}</span>
+      <span class="k-tag">${esc(w.tag)}</span>
+    </button>`).join("")}</div>`;
+}
+
+function kartaHTML(w, aktywna){
+  const c = KOLORY[w.przedmiot];
+  const badge = (w.rola==="baza"
+    ? `<span class="baza-badge">tu poznasz zagadnienie</span>`
+    : `<span class="rola-badge">tu poznasz zastosowania</span>`)
+    + (w.zakres==="rozszerzony" ? `<span class="zr-badge">zakres rozszerzony</span>` : "");
+  const wym = w.wymagania.map(r => `
+    <div class="wym">
+      <span class="kod">${esc(w.przedmiot)} ${esc(r.kod)}${r.zakres==="rozszerzony" ? " · ZR" : ""}</span>
+      <span class="dzial">${esc(r.dzial_nazwa)}</span>
+      <div class="cytat">${esc(r.tekst)}</div>
+    </div>`).join("");
+  const maty = w.materialy.length
+    ? `<div class="mat-block">${w.materialy.map(m=>
+        `<a class="mat-chip" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.tytul)} <span class="zn">ZPE ↗</span></a>`
+      ).join("")}</div>`
+    : "";
+  return `
+  <div class="scard${aktywna ? " aktywna" : ""}" style="--c:${c}">
+    <div class="banda"></div>
+    <span class="wm">${EMBLEMATY[w.przedmiot]||""}</span>
+    <div class="cialo">
+      <div class="meta">${pill(w.przedmiot)}${badge}</div>
+      <h2>${esc(w.haslo)}</h2>
+      <p class="bo">${esc(w.bo)}</p>
+      ${maty}
+      <button class="pp-btn" onclick="toglPP(this)">
+        <span class="chev">▶</span> Zapis w podstawie programowej${w.wymagania.length>1 ? ` (${w.wymagania.length})` : ""}
+      </button>
+      <div class="pp-block">${wym}</div>
+    </div>
+  </div>`;
+}
+
+function navHTML(z){
+  const prev = z.wystapienia[KROK-1], next = z.wystapienia[KROK+1];
+  return `
+  <div class="stage-nav">
+    <button class="snav" ${prev?"":"disabled"} onclick="idz(${KROK-1})">
+      ←&nbsp;<span class="cel">${prev?esc(nazwaP(prev.przedmiot)):""}</span>
+    </button>
+    <div class="kropki-pasek">${z.wystapienia.map((w,i)=>
+      `<button class="kr ${i<KROK?"byl":""} ${i===KROK?"on":""}" style="--kc:${KOLORY[w.przedmiot]}"
+        onclick="idz(${i})" title="${esc(nazwaP(w.przedmiot))}" aria-label="${esc(nazwaP(w.przedmiot))}"></button>`).join("")}</div>
+    <button class="snav" ${next?"":"disabled"} onclick="idz(${KROK+1})">
+      <span class="cel">${next?esc(nazwaP(next.przedmiot)):""}</span>&nbsp;→
+    </button>
+  </div>
+  <div class="klawisze">przełączaj strzałkami <kbd>←</kbd> <kbd>→</kbd></div>`;
+}
+
+function renderZagadnienie(){
+  const z = BIEZACE;
+  document.getElementById("widok").innerHTML = `
+    <button class="back" onclick="location.hash=''">← Wszystkie zagadnienia</button>
+    <div class="zhero">
+      <div class="em">${z.emoji}</div>
+      <div class="etap-mini">${esc(ETAPY[z.etap]||"")}</div>
+      <h1>${esc(z.nazwa)}</h1>
+      <div class="pyt">${esc(z.pytanie)}</div>
+      <div class="esencja">${esc(z.esencja)}</div>
+    </div>
+    ${krokiHTML(z)}
+    <div class="stage">
+      <div class="stos">${z.wystapienia.map((w,i)=>kartaHTML(w, i===KROK)).join("")}</div>
+      ${navHTML(z)}
+    </div>
+    ${osHTML(z)}`;
+}
+
+function toglPP(btn){
+  btn.classList.toggle("open");
+  btn.nextElementSibling.classList.toggle("show");
+}
+
+function idz(i){
+  if(!BIEZACE || i<0 || i>=BIEZACE.wystapienia.length) return;
+  KROK = i;
+  renderZagadnienie();
+}
+
+function route(){
+  const m = location.hash.match(/^#\/z\/(.+)$/);
+  const home = document.getElementById("home");
+  const widok = document.getElementById("widok");
+  if(m && DANE){
+    const z = DANE.zagadnienia.find(x=>x.id===decodeURIComponent(m[1]));
+    if(!z){ location.hash=""; return; }
+    if(BIEZACE !== z){ BIEZACE = z; KROK = 0; }
+    if(z.etap && z.etap !== ETAP){ ETAP = z.etap; localStorage.setItem("zag_etap", ETAP); }
+    home.hidden = true; widok.hidden = false;
+    renderZagadnienie();
+    window.scrollTo({top:0});
+  } else {
+    BIEZACE = null;
+    widok.hidden = true; home.hidden = false;
+    if(DANE) renderHome();
+  }
+}
+
+document.addEventListener("keydown", e => {
+  if(!BIEZACE) return;
+  if(e.key==="ArrowRight") idz(KROK+1);
+  if(e.key==="ArrowLeft") idz(KROK-1);
+});
+
+/* ===== bramka hasła: dane są zaszyfrowane AES-GCM, klucz z PBKDF2 ===== */
+const bin = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+
+async function odszyfruj(haslo){
+  const paczka = await (await fetch("dane.enc", {cache:"no-store"})).json();
+  const baza = await crypto.subtle.importKey(
+    "raw", new TextEncoder().encode(haslo), "PBKDF2", false, ["deriveKey"]);
+  const klucz = await crypto.subtle.deriveKey(
+    {name:"PBKDF2", salt:bin(paczka.salt), iterations:paczka.iter, hash:"SHA-256"},
+    baza, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+  const jawne = await crypto.subtle.decrypt(
+    {name:"AES-GCM", iv:bin(paczka.nonce)}, klucz, bin(paczka.ct));
+  return JSON.parse(new TextDecoder().decode(jawne));
+}
+
+async function wpusc(haslo){
+  DANE = await odszyfruj(haslo);
+  sessionStorage.setItem("zag_haslo", haslo);
+  document.getElementById("bramka").remove();
+  document.body.classList.remove("zamkniete");
+  start();
+}
+
+async function otworz(e){
+  e.preventDefault();
+  const btn = document.getElementById("wejdz");
+  const blad = document.getElementById("blad");
+  btn.disabled = true; blad.textContent = "";
+  try{
+    await wpusc(document.getElementById("haslo").value);
+  }catch(err){
+    blad.textContent = "Nieprawidłowe hasło.";
+    btn.disabled = false;
+    document.getElementById("haslo").select();
+  }
+  return false;
+}
+
+async function init(){
+  const zapamietane = sessionStorage.getItem("zag_haslo");
+  if(zapamietane){
+    try{ await wpusc(zapamietane); return; }
+    catch(err){ sessionStorage.removeItem("zag_haslo"); }
+  }
+  document.getElementById("haslo").focus();
+}
+
+function start(){
+  renderHome();
+  const st = document.getElementById("stopka");
+  st.hidden = false;
+  const wersje = (DANE.wersje_pp || [DANE.wersja_pp]).map(w => `${w.nazwa} — ${w.akt}`).join("; ");
+  st.textContent = `Cytaty wymagań pochodzą z: ${wersje}. ` +
+    `Materiały: Zintegrowana Platforma Edukacyjna (zpe.gov.pl). Dobór zagadnień i komentarze: pilotaż IBE.`;
+  route();
+}
+window.addEventListener("hashchange", route);
+init();
+</script>
+</body>
+</html>
