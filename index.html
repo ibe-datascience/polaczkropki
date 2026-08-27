@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zagadnienia — jedno pojęcie, wiele przedmiotów</title>
+<title>Połącz kropki — zagadnienia</title>
 <link rel="icon" href="assets/favicon.ico">
 <style>
 :root{
@@ -258,6 +258,23 @@ main{max-width:1020px;margin:0 auto;padding:0 22px 90px}
 }
 
 /* ===== bramka hasła ===== */
+/* motyw „połącz kropki” powtórzony lokalnie, bo bramka trafia też na podstrony,
+   które nie mają stylów łuku z hero — stąd własne nazwy klatek kluczowych */
+.bramka .kropki-tlo{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.bramka .kropki-tlo .prowadnica{fill:none;stroke:#d7dfe9;stroke-width:1.5;stroke-dasharray:3 8;stroke-linecap:round}
+.bramka .kropki-tlo .linia{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;
+  animation:bramkaRysuj 1.5s cubic-bezier(.55,.08,.3,1) .18s forwards}
+.bramka .kropki-tlo circle{opacity:0;transform-box:fill-box;transform-origin:center;
+  animation:bramkaKropka .42s cubic-bezier(.34,1.5,.5,1) forwards}
+.bramka .kropki-tlo text{opacity:0;fill:#94a3b8;font-size:11px;font-weight:800;text-anchor:middle;
+  animation:bramkaNumer .4s ease forwards}
+@keyframes bramkaRysuj{to{stroke-dashoffset:0}}
+@keyframes bramkaKropka{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:none}}
+@keyframes bramkaNumer{to{opacity:.8}}
+@media (prefers-reduced-motion:reduce){
+  .bramka .kropki-tlo .linia{animation:none;stroke-dashoffset:0}
+  .bramka .kropki-tlo circle, .bramka .kropki-tlo text{animation:none;opacity:1}
+}
 body.zamkniete > header, body.zamkniete > main{display:none}
 .bramka{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;
   justify-content:center;gap:22px;padding:24px;background:var(--bg);text-align:center}
@@ -279,7 +296,7 @@ body.zamkniete > header, body.zamkniete > main{display:none}
 </head>
 <body class="zamkniete">
 
-<div class="bramka" id="bramka">
+<div class="bramka" id="bramka" data-modul="index.html">
   <div class="oprawa">
     <svg class="kropki-tlo" viewBox="0 0 420 150" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
       <defs>
@@ -325,6 +342,8 @@ body.zamkniete > header, body.zamkniete > main{display:none}
   </div>
   <div class="spacer"></div>
   <nav>
+    <a href="index.html" class="on">Zagadnienia</a>
+    <a href="nauczyciel.html">Dla nauczyciela</a>
   </nav>
 </header>
 
@@ -663,7 +682,7 @@ async function odszyfruj(haslo){
 
 async function wpusc(haslo){
   DANE = await odszyfruj(haslo);
-  sessionStorage.setItem("zag_haslo", haslo);
+  sessionStorage.setItem("pk_haslo", haslo);
   document.getElementById("bramka").remove();
   document.body.classList.remove("zamkniete");
   start();
@@ -685,10 +704,10 @@ async function otworz(e){
 }
 
 async function init(){
-  const zapamietane = sessionStorage.getItem("zag_haslo");
+  const zapamietane = sessionStorage.getItem("pk_haslo");
   if(zapamietane){
     try{ await wpusc(zapamietane); return; }
-    catch(err){ sessionStorage.removeItem("zag_haslo"); }
+    catch(err){ sessionStorage.removeItem("pk_haslo"); }
   }
   document.getElementById("haslo").focus();
 }
