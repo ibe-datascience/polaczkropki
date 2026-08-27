@@ -723,8 +723,10 @@ function route(){
       return;
     }
   }
+  const zeSzczegolu = det.style.display === "block";
   home.style.display = "block"; det.style.display = "none";
   if(DANE) renderHome();
+  if(zeSzczegolu) window.scrollTo(0,0);
 }
 
 /* ===== bramka hasła: dane są zaszyfrowane AES-GCM, klucz z PBKDF2 ===== */
