@@ -41,9 +41,9 @@ main{max-width:960px;margin:0 auto;padding:0 22px 90px}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
 /* ===== hero: łamigłówka „połącz kropki” ===== */
-/* prowadnica jak w zeszycie, kolorowa linia dorysowuje się i zapala kolejne kropki */
-.kropki-tlo{position:absolute;inset:-8% -4% auto;width:108%;height:min(42vw,280px);max-height:320px;
-  pointer-events:none;overflow:visible;opacity:.55;z-index:0}
+/* prowadnica jak w zeszycie; łuk zostaje W hero (bez ujemnego top), żeby sticky header go nie ucinał */
+.kropki-tlo{position:absolute;left:50%;top:4px;transform:translateX(-50%);width:min(1040px,112%);
+  height:min(36vw,230px);max-height:250px;pointer-events:none;overflow:visible;opacity:.55;z-index:0}
 .kropki-tlo .prowadnica{fill:none;stroke:#d7dfe9;stroke-width:1.5;stroke-dasharray:3 8;stroke-linecap:round}
 .kropki-tlo .linia{fill:none;stroke-width:2.7;stroke-linecap:round;stroke-linejoin:round;
   stroke-dasharray:100;stroke-dashoffset:100;filter:url(#softGlow);
@@ -62,11 +62,15 @@ main{max-width:960px;margin:0 auto;padding:0 22px 90px}
 }
 
 /* ===== hero ===== */
-.hero{position:relative;text-align:center;padding:58px 0 8px;animation:fadein .4s ease;overflow:visible}
+.hero{position:relative;text-align:center;padding:28px 0 8px;animation:fadein .4s ease;overflow:visible}
 .hero > *:not(.kropki-tlo){position:relative;z-index:1}
-@media (max-width:640px){.kropki-tlo{opacity:.32;height:180px;inset:-4% -8% auto;width:116%}}
 .hero .etap{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  color:#4257e0;background:rgba(96,126,255,.1);border:1px solid rgba(96,126,255,.28);padding:5px 14px;border-radius:999px;margin-bottom:20px}
+  color:#4257e0;background:rgba(96,126,255,.1);border:1px solid rgba(96,126,255,.28);padding:5px 14px;border-radius:999px;
+  margin:min(22vw,148px) 0 20px}
+@media (max-width:640px){
+  .kropki-tlo{opacity:.35;height:160px;width:120%}
+  .hero .etap{margin-top:118px}
+}
 .hero h1{font-size:clamp(26px,4.2vw,42px);font-weight:800;letter-spacing:-.025em;line-height:1.16;text-wrap:balance}
 .hero h1 .grad{background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero p{margin:14px auto 0;max-width:620px;color:#475569;font-size:15px;line-height:1.7;text-wrap:pretty}
@@ -461,7 +465,7 @@ body.zamkniete > header, body.zamkniete > main{display:none}
 <main>
   <section id="home">
     <div class="hero">
-      <svg class="kropki-tlo" id="kropki-hero" viewBox="0 0 1000 360" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <svg class="kropki-tlo" id="kropki-hero" viewBox="0 -28 1000 388" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
         <defs>
           <linearGradient id="gradKropkiHero" x1="0" y1="1" x2="1" y2="0">
             <stop offset="0" stop-color="#00a686"/><stop offset=".28" stop-color="#0891b2"/>
@@ -1408,7 +1412,7 @@ function odtworzKropki(){
 const bin = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 
 async function odszyfruj(haslo){
-  const odp = await fetch("nauczyciel.enc?v=1794747225", {cache:"no-store"});
+  const odp = await fetch("nauczyciel.enc?v=1794747311", {cache:"no-store"});
   if(!odp.ok) throw Object.assign(new Error("brak danych"), {kod:"dane"});
   const paczka = await odp.json();
   const baza = await crypto.subtle.importKey(
