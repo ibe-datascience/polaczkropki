@@ -1408,7 +1408,9 @@ function odtworzKropki(){
 const bin = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 
 async function odszyfruj(haslo){
-  const paczka = await (await fetch("nauczyciel.enc", {cache:"no-store"})).json();
+  const odp = await fetch("nauczyciel.enc?v=1794747225", {cache:"no-store"});
+  if(!odp.ok) throw Object.assign(new Error("brak danych"), {kod:"dane"});
+  const paczka = await odp.json();
   const baza = await crypto.subtle.importKey(
     "raw", new TextEncoder().encode(haslo), "PBKDF2", false, ["deriveKey"]);
   const klucz = await crypto.subtle.deriveKey(
@@ -1433,9 +1435,11 @@ async function otworz(e){
   const blad = document.getElementById("blad");
   btn.disabled = true; blad.textContent = "";
   try{
-    await wpusc(document.getElementById("haslo").value);
+    await wpusc(document.getElementById("haslo").value.trim());
   }catch(err){
-    blad.textContent = "Nieprawidłowe hasło.";
+    blad.textContent = err && err.kod === "dane"
+      ? "Nie udało się pobrać danych. Odśwież stronę (Cmd+Shift+R)."
+      : "Nieprawidłowe hasło.";
     btn.disabled = false;
     document.getElementById("haslo").select();
   }
