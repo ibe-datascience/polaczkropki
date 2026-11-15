@@ -1412,7 +1412,7 @@ function odtworzKropki(){
 const bin = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 
 async function odszyfruj(haslo){
-  const odp = await fetch("nauczyciel.enc?v=1794747311", {cache:"no-store"});
+  const odp = await fetch("nauczyciel.enc?v=1794747450", {cache:"no-store"});
   if(!odp.ok) throw Object.assign(new Error("brak danych"), {kod:"dane"});
   const paczka = await odp.json();
   const baza = await crypto.subtle.importKey(
