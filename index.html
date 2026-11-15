@@ -527,32 +527,30 @@ body.zamkniete > header, body.zamkniete > main{display:none}
     <div id="tresc"></div>
 
     <div class="dlaczego">
-      <h2>Dlaczego powiązania</h2>
-      <p>Uczeń nie uczy się biologii czy geografii w oderwaniu od reszty swojej
-      wiedzy. Nowe informacje łatwiej zrozumieć i zapamiętać, gdy można połączyć
-      je z tym, co już się wie. Odwoływanie się do wcześniejszej wiedzy pomaga
-      uruchomić istniejące schematy poznawcze, nadać nowym informacjom sens
-      i ułatwić ich przetwarzanie.</p>
+      <h2>Po co łączyć wiedzę między przedmiotami?</h2>
+      <p>Uczeń nie uczy się biologii ani geografii w oderwaniu od tego, co już wie.
+      Nowe rzeczy łatwiej zrozumieć i zapamiętać, gdy da się je zestawić z wcześniejszą
+      wiedzą — wtedy nabierają sensu, zamiast wisieć w powietrzu.</p>
     </div>
 
-    <div class="korzysci-tytul">Co możesz wykorzystać w swojej pracy?</div>
+    <div class="korzysci-tytul">Co zyskujesz przy przygotowaniu lekcji?</div>
     <div class="korzysci">
       <div class="korzysc" style="--a:#00a686"><span class="ik">🧠</span>
-        <b>Aktywowanie wiedzy uprzedniej</b>
-        <p>Przypomnij uczniom pojęcia i idee poznane wcześniej na innych przedmiotach,
-        zanim wprowadzisz nowe lub bardziej złożone zagadnienie.</p></div>
+        <b>Sięgnij po to, co już wiedzą</b>
+        <p>Przypomnij pojęcia z innych przedmiotów, zanim wprowadzisz coś nowego
+        albo trudniejszego — uczniowie mają wtedy za co „zahaczyć”.</p></div>
       <div class="korzysc" style="--a:#4257e0"><span class="ik">🌉</span>
-        <b>Budowanie transferu wiedzy</b>
-        <p>Pomóż uczniom dostrzec, że ta sama wiedza i umiejętności mogą mieć zastosowanie
-        w różnych kontekstach — od matematyki i fizyki po biologię, geografię czy język polski.</p></div>
+        <b>Pokaż, że to wraca na innych lekcjach</b>
+        <p>Ta sama umiejętność wraca w matematyce, fizyce, biologii, geografii
+        czy na polskim. Warto to uczniom nazwać wprost.</p></div>
       <div class="korzysc" style="--a:#7c5cff"><span class="ik">🧩</span>
-        <b>Uczenie się przez powiązania</b>
-        <p>Pokazuj, jak pojedyncze pojęcia wpisują się w szerszą sieć wiedzy,
-        zamiast poznawać je wyłącznie w izolacji.</p></div>
+        <b>Zbuduj całość z pojedynczych pojęć</b>
+        <p>Zamiast uczyć haseł osobno, pokaż, jak łączą się w większy obraz —
+        wtedy łatwiej je zapamiętać i zastosować.</p></div>
       <div class="korzysc" style="--a:#ec4899"><span class="ik">📜</span>
-        <b>Oparcie w podstawie programowej</b>
-        <p>Otrzymujesz konkretne odniesienia i cytaty z wymagań szczegółowych, które możesz
-        wykorzystać podczas planowania lekcji i projektowania działań interdyscyplinarnych.</p></div>
+        <b>Masz cytat z podstawy pod ręką</b>
+        <p>Przy każdym przykładzie dostajesz przedmiot, klasy i dosłowne brzmienie
+        wymagania — wygodne przy planowaniu i współpracy z innymi nauczycielami.</p></div>
     </div>
   </section>
   <section id="szczegol" style="display:none"></section>
@@ -967,17 +965,17 @@ function renderHome(){
   }).join("");
   const grupy = kafleH ? `
     <div class="sek" id="sek-grupy">
-      <div class="sek-tytul">Przykłady z życia według tego, gdzie się je spotyka</div>
+      <div class="sek-tytul">Przykłady z życia — według miejsca, gdzie je spotykasz</div>
       <p class="sek-pod">${ilePrzykladow(DANE.rzeczy.length)} w ${DANE.grupy_hasel.length} grupach.
-        Wybierz grupę, żeby zobaczyć listę przykładów z pytaniami.</p>
+        Wybierz grupę, żeby zobaczyć listę z pytaniami do lekcji.</p>
       <div class="ggrid">${kafleH}</div>
     </div>` : "";
 
   const panel = `
     <div class="sek" id="sek-lekcja">
-      <div class="sek-tytul">Pojęcia według twojej lekcji</div>
-      <p class="sek-pod">Wybierz etap i przedmiot. Wybór zostaje zapamiętany w tej przeglądarce:
-        na stronach przykładów oznaczymy bloki z twojego przedmiotu.</p>
+      <div class="sek-tytul">Pojęcia pod twoją lekcję</div>
+      <p class="sek-pod">Wybierz etap i przedmiot — zapamiętamy wybór w tej przeglądarce
+        i na stronach przykładów wyróżnimy bloki z twojego przedmiotu.</p>
     <div class="panel" style="margin-top:0">
       <div class="rzad"><span class="et">Etap</span>
         <div class="chipy">${ETAPY.map(([w,n]) => `
@@ -1148,7 +1146,7 @@ function mostyHTML(z){
   return `
   <div class="mosty">
     <h2>Powiązane pojęcia szkolne</h2>
-    <p class="podpis">Mosty między zjawiskami — wspólny mechanizm albo skala, niezależnie od przykładów z życia. Punkt startu do jednostki łączącej przedmioty.</p>
+    <p class="podpis">Inne pojęcia, które łączą się z tym samym mechanizmem albo skalą — niezależnie od przykładów z życia. Dobry punkt startu do lekcji łączącej przedmioty.</p>
     <div class="mlasta">${mosty.map(m => {
       const innyId = m.a === z.id ? m.b : m.a;
       const inny = poId[innyId];
@@ -1412,7 +1410,7 @@ function odtworzKropki(){
 const bin = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 
 async function odszyfruj(haslo){
-  const odp = await fetch("nauczyciel.enc?v=1794747450", {cache:"no-store"});
+  const odp = await fetch("nauczyciel.enc?v=1794747502", {cache:"no-store"});
   if(!odp.ok) throw Object.assign(new Error("brak danych"), {kod:"dane"});
   const paczka = await odp.json();
   const baza = await crypto.subtle.importKey(
