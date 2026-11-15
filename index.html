@@ -40,8 +40,31 @@ main{max-width:960px;margin:0 auto;padding:0 22px 90px}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
+/* ===== hero: łamigłówka „połącz kropki” ===== */
+/* prowadnica jak w zeszycie, kolorowa linia dorysowuje się i zapala kolejne kropki */
+.kropki-tlo{position:absolute;inset:-8% -4% auto;width:108%;height:min(42vw,280px);max-height:320px;
+  pointer-events:none;overflow:visible;opacity:.55;z-index:0}
+.kropki-tlo .prowadnica{fill:none;stroke:#d7dfe9;stroke-width:1.5;stroke-dasharray:3 8;stroke-linecap:round}
+.kropki-tlo .linia{fill:none;stroke-width:2.7;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:100;stroke-dashoffset:100;filter:url(#softGlow);
+  animation:rysujLuk 1.65s cubic-bezier(.55,.08,.3,1) .22s forwards}
+.kropki-tlo .kropka{opacity:0;transform-box:fill-box;transform-origin:center;
+  animation:kropkaZapala .45s cubic-bezier(.34,1.55,.5,1) forwards}
+.kropki-tlo .kropka.rdzen{fill:#fff;stroke-width:2.2}
+.kropki-tlo text{opacity:0;fill:#94a3b8;font-size:11px;font-weight:800;font-family:inherit;text-anchor:middle;
+  animation:numerWchodzi .4s ease forwards}
+@keyframes rysujLuk{to{stroke-dashoffset:0}}
+@keyframes kropkaZapala{from{opacity:0;transform:scale(.15)}to{opacity:1;transform:none}}
+@keyframes numerWchodzi{to{opacity:.85}}
+@media (prefers-reduced-motion:reduce){
+  .kropki-tlo .linia{animation:none;stroke-dashoffset:0}
+  .kropki-tlo .kropka,.kropki-tlo text{animation:none;opacity:1}
+}
+
 /* ===== hero ===== */
-.hero{text-align:center;padding:54px 0 8px;animation:fadein .4s ease}
+.hero{position:relative;text-align:center;padding:58px 0 8px;animation:fadein .4s ease;overflow:visible}
+.hero > *:not(.kropki-tlo){position:relative;z-index:1}
+@media (max-width:640px){.kropki-tlo{opacity:.32;height:180px;inset:-4% -8% auto;width:116%}}
 .hero .etap{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
   color:#4257e0;background:rgba(96,126,255,.1);border:1px solid rgba(96,126,255,.28);padding:5px 14px;border-radius:999px;margin-bottom:20px}
 .hero h1{font-size:clamp(26px,4.2vw,42px);font-weight:800;letter-spacing:-.025em;line-height:1.16;text-wrap:balance}
@@ -438,6 +461,43 @@ body.zamkniete > header, body.zamkniete > main{display:none}
 <main>
   <section id="home">
     <div class="hero">
+      <svg class="kropki-tlo" id="kropki-hero" viewBox="0 0 1000 360" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <defs>
+          <linearGradient id="gradKropkiHero" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0" stop-color="#00a686"/><stop offset=".28" stop-color="#0891b2"/>
+            <stop offset=".52" stop-color="#607eff"/><stop offset=".76" stop-color="#ec4899"/>
+            <stop offset="1" stop-color="#f59e0b"/>
+          </linearGradient>
+          <filter id="softGlow" x="-8%" y="-40%" width="116%" height="180%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <path class="prowadnica" d="M40,300 C58.3,278.3 103.3,208.3 150,170 C196.7,131.7 261.7,91.7 320,70 C378.3,48.3 440,40 500,40 C560,40 621.7,48.3 680,70 C738.3,91.7 803.3,131.7 850,170 C896.7,208.3 941.7,278.3 960,300"/>
+        <path class="linia" pathLength="100" stroke="url(#gradKropkiHero)"
+              d="M40,300 C58.3,278.3 103.3,208.3 150,170 C196.7,131.7 261.7,91.7 320,70 C378.3,48.3 440,40 500,40 C560,40 621.7,48.3 680,70 C738.3,91.7 803.3,131.7 850,170 C896.7,208.3 941.7,278.3 960,300"/>
+        <circle class="kropka" cx="40"  cy="300" r="7" fill="#00a686" style="animation-delay:.20s"/>
+        <circle class="kropka rdzen" cx="40"  cy="300" r="2.6" stroke="#00a686" style="animation-delay:.28s"/>
+        <circle class="kropka" cx="150" cy="170" r="7" fill="#0891b2" style="animation-delay:.46s"/>
+        <circle class="kropka rdzen" cx="150" cy="170" r="2.6" stroke="#0891b2" style="animation-delay:.54s"/>
+        <circle class="kropka" cx="320" cy="70"  r="7" fill="#607eff" style="animation-delay:.72s"/>
+        <circle class="kropka rdzen" cx="320" cy="70"  r="2.6" stroke="#607eff" style="animation-delay:.80s"/>
+        <circle class="kropka" cx="500" cy="40"  r="7" fill="#7c5cff" style="animation-delay:.98s"/>
+        <circle class="kropka rdzen" cx="500" cy="40"  r="2.6" stroke="#7c5cff" style="animation-delay:1.06s"/>
+        <circle class="kropka" cx="680" cy="70"  r="7" fill="#ec4899" style="animation-delay:1.24s"/>
+        <circle class="kropka rdzen" cx="680" cy="70"  r="2.6" stroke="#ec4899" style="animation-delay:1.32s"/>
+        <circle class="kropka" cx="850" cy="170" r="7" fill="#e11d48" style="animation-delay:1.50s"/>
+        <circle class="kropka rdzen" cx="850" cy="170" r="2.6" stroke="#e11d48" style="animation-delay:1.58s"/>
+        <circle class="kropka" cx="960" cy="300" r="7" fill="#f59e0b" style="animation-delay:1.74s"/>
+        <circle class="kropka rdzen" cx="960" cy="300" r="2.6" stroke="#f59e0b" style="animation-delay:1.82s"/>
+        <text x="40"  y="328" style="animation-delay:.30s">1</text>
+        <text x="150" y="152" style="animation-delay:.56s">2</text>
+        <text x="320" y="54"  style="animation-delay:.82s">3</text>
+        <text x="500" y="24"  style="animation-delay:1.08s">4</text>
+        <text x="680" y="54"  style="animation-delay:1.34s">5</text>
+        <text x="850" y="152" style="animation-delay:1.60s">6</text>
+        <text x="960" y="328" style="animation-delay:1.86s">7</text>
+      </svg>
       <span class="etap">Dla nauczyciela · wersja testowa</span>
       <h1>Nauka staje się łatwiejsza,<br><span class="grad">gdy uczniowie widzą powiązania.</span></h1>
       <p><b>Wpisz przykład z życia</b>: lodówkę, alfabet Braille’a, paragon, polonez.
@@ -1333,6 +1393,15 @@ function route(){
   home.style.display = "block"; det.style.display = "none";
   if(DANE) renderHome();
   if(zeSzczegolu) window.scrollTo(0,0);
+  odtworzKropki();
+}
+
+function odtworzKropki(){
+  const svg = document.getElementById("kropki-hero");
+  if(!svg || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  // restart CSS: klonowanie węzła odtwarza animację po powrocie na start / po bramce
+  const klon = svg.cloneNode(true);
+  svg.replaceWith(klon);
 }
 
 /* ===== bramka hasła: dane są zaszyfrowane AES-GCM, klucz z PBKDF2 ===== */
